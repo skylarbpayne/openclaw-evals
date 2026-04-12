@@ -37,12 +37,19 @@ Every non-trivial change must follow this order:
    - Only after steps 1 through 4 are done.
    - Keep the implementation narrowly scoped to the selected stories and plan.
 
-6. **Update the trace matrix after implementation**
-   - Record the new status honestly.
-   - Point to the actual artifacts, tests, or docs that now satisfy the story.
+6. **Create or update acceptance testing for the selected stories**
+   - Any change that adds or modifies code must also create or update acceptance testing for the affected user stories.
+   - Use `docs/acceptance-testing-template.md` as the starting point.
+   - Acceptance testing may be automated, manual, or mixed, but it must be explicit and current.
+   - The acceptance doc must say how the story is validated, what evidence exists, and what remains unvalidated.
 
-7. **Verify before claiming done**
+7. **Update the trace matrix after implementation**
+   - Record the new status honestly.
+   - Point to the actual artifacts, tests, and acceptance docs that now satisfy the story.
+
+8. **Verify before claiming done**
    - Run the relevant tests.
+   - Run through the current acceptance testing for the stories in scope when the slice is meant to be releaseable.
    - If a slice is only partial, say so plainly.
 
 ## Hard rules
@@ -51,6 +58,7 @@ Every non-trivial change must follow this order:
 Do not start coding first and rationalize later.
 
 Every meaningful code change must map to one or more user stories.
+The PR description should name those story IDs directly.
 
 ### No architecture drift by accident
 If implementation reveals the architecture is wrong or incomplete, update the architecture document deliberately.
@@ -61,6 +69,15 @@ Do not silently fork the real system shape in code.
 If code exists, the matrix should show it.
 If something is still a stub, say it is a stub.
 If something is not started, do not mark it in progress because it feels nice.
+If validation exists, the matrix notes should point to the relevant test or acceptance artifact.
+
+### No code without validation posture
+If a change implements or modifies code, answer these questions in-repo before calling it done:
+- What user stories does this implement?
+- How is each story validated?
+- Where is the acceptance testing artifact?
+
+If those answers are missing, the change is not done.
 
 ### Prefer thin vertical slices
 Finish the smallest closed loop that satisfies a story before expanding surfaces.
@@ -76,6 +93,7 @@ Use this checklist:
 - Trace matrix updated to reflect start state
 - Code implemented
 - Tests added or updated
+- Acceptance testing added or updated for affected stories
 - Trace matrix updated to reflect end state
 - Repo status/docs updated if the overall project posture changed
 
@@ -100,3 +118,13 @@ Return to the docs in this order:
 4. implementation plan
 
 Then make the smallest honest move.
+
+## Release rule
+
+Before each release, run the current acceptance testing for every story included in that release.
+
+Do not call a release ready unless:
+- the included story IDs are listed
+- their acceptance testing artifacts are up to date
+- the acceptance tests were actually run
+- the release note or PR summary states pass/fail status and any known gaps
