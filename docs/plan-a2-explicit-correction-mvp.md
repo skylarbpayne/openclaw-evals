@@ -34,6 +34,34 @@ Implement one complete A2 slice that:
 - MCP, API, dashboard, benchmarking, or optimization surfaces
 - claiming A1, B1, B2, or P1 are complete
 
+## User trigger and install path
+
+This must be explicit so the first implementation PR is reviewable.
+
+### For the A2 MVP PR
+The initial A2 slice is **not** installed or triggered as an OpenClaw plugin yet.
+
+The first user trigger is developer-facing and repo-local:
+- run the A2 implementation against transcript-shaped fixtures or local imports from the repo
+- inspect the resulting persisted candidate artifacts and test output locally
+
+In other words, the first A2 PR proves the core behavior exists and is testable.
+It does **not** yet prove end-user installation through OpenClaw.
+
+### After A2 is proven
+End-user installation and runtime triggering belong to **P1 OpenClaw plugin first**.
+That later slice should make the system installable and triggerable through normal OpenClaw plugin surfaces.
+
+Expected later P1 responsibilities:
+- define how the plugin is installed in OpenClaw
+- register config schema and setup path
+- define how mining is triggered, for example manual run, scheduled job, or explicit tool action
+- expose the relevant user-facing or operator-facing entrypoints
+
+### Constraint
+Do not smuggle plugin-installation work into the A2 PR.
+Instead, make the A2 PR explicit about its temporary trigger path: local, repo-level, developer-operated execution plus tests and acceptance evidence.
+
 ## Required inputs
 The first implementation must support a transcript-shaped fixture or import format with enough structure to satisfy A2.
 
