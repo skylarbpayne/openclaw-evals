@@ -15,12 +15,12 @@ Purpose: track each user story from definition through implementation and valida
 
 | Story ID | Story summary | Architecture subsystem(s) | Primary artifact(s) | Implementation phase | Readiness status | Acceptance owner | Notes |
 |---|---|---|---|---|---|---|---|
-| A1 | Discover mistakes from transcripts | Data ingestion, Failure mining | transcript ingestion job, candidate detector | Phase 1 | In design | Skylar | Seed capability |
-| A2 | Detect explicit user corrections | Failure mining | explicit correction detector | Phase 1 | Ready for implementation | Skylar | Best MVP entry point |
+| A1 | Discover mistakes from transcripts | Data ingestion, Failure mining | transcript ingestion job, candidate detector | Phase 1 | In progress | Skylar | Stub exists in `src/ingest/transcript-ingestion.js`; acceptance posture in `docs/acceptance-a1-discover-mistakes-from-transcripts.md`; not yet wired to real transcript sources |
+| A2 | Detect explicit user corrections | Failure mining | explicit correction detector | Phase 1 | In progress | Skylar | Initial detector and tests exist in `src/detectors/explicit-correction.js` and `test/explicit-correction.test.js`; acceptance posture in `docs/acceptance-a2-detect-explicit-user-corrections.md` |
 | A3 | Detect implicit failures | Failure mining | implicit heuristic detector | Phase 2 | Not started | Skylar | Lower-confidence path |
 | A4 | Cluster recurring mistake types | Failure mining, Mistake registry | family clustering service | Phase 2 | Not started | Skylar | Needs enough data |
-| B1 | Create typed mistake record | Mistake registry | mistake schema, persistence layer | Phase 1 | Ready for implementation | Skylar | Core entity |
-| B2 | Review and curate candidates | Review and curation, Dashboard | review queue UI, curation actions | Phase 1 | In design | Skylar | Human in loop |
+| B1 | Create typed mistake record | Mistake registry | mistake schema, persistence layer | Phase 1 | In progress | Skylar | Schema exists in `src/schemas/mistake-candidate.js`; acceptance posture in `docs/acceptance-b1-create-typed-mistake-record.md`; persistence is still in-memory |
+| B2 | Review and curate candidates | Review and curation, Dashboard | review queue UI, curation actions | Phase 1 | In progress | Skylar | Review API scaffold exists in `src/review/api.js`; acceptance posture in `docs/acceptance-b2-review-and-curate-candidates.md`; no real curation loop yet |
 | B3 | Track severity and frequency | Mistake registry, Results analytics | severity model, aggregation views | Phase 2 | Not started | Skylar | Depends on corpus |
 | C1 | Generate minimal repro eval | Eval generation | mistake-to-eval converter | Phase 2 | Not started | Skylar | First eval creator |
 | C2 | Expand variants | Eval generation | variant generator | Phase 3 | Not started | Skylar | Synthetic after real cases |
@@ -40,7 +40,7 @@ Purpose: track each user story from definition through implementation and valida
 | G1 | Export cases for offline analysis | Research bridge | export API, markdown and JSON export | Phase 4 | Not started | Skylar | Useful external hook |
 | G2 | Preserve privacy boundaries | Ingestion, Export, Registry | redaction policy, sanitization controls | Phase 2 | Not started | Skylar | Non-optional |
 | G3 | Re-run benchmarks on schedule | Plugin runtime, Eval runner | cron runner, snapshot history | Phase 4 | Not started | Skylar | Operational hardening |
-| P1 | Install as OpenClaw plugin | Plugin runtime | plugin module, config, migrations | Phase 1 | In design | Skylar | Product packaging |
+| P1 | Install as OpenClaw plugin | Plugin runtime | plugin module, config, migrations | Phase 1 | In progress | Skylar | Skeleton exists in `src/plugin/index.js`; config, migrations, and runtime wiring still missing |
 | P2 | MCP-first interface | MCP layer | tools and resources contract | Phase 3 | Not started | Skylar | Agent-native access |
 | P3 | API out of the box | API layer | HTTP API spec and handlers | Phase 2 | Not started | Skylar | External integration |
 | P4 | Research compatibility layer | Research bridge, Schemas | exchange schemas, bundle validator | Phase 4 | Not started | Skylar | Artifact boundary |
