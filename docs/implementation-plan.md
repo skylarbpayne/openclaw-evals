@@ -1,15 +1,13 @@
 # High-Level Implementation Plan
 
-This plan orders work according to the architecture and tries not to build theater before the core loop works.
+This plan orders work according to the architecture and keeps the repo focused on the smallest real closed loop.
 
 ## Ordering principle
-Build the smallest closed loop first:
-1. ingest real evidence
-2. detect high-confidence failures
-3. curate them into structured mistake records
-4. convert them into eval cases
-5. run benchmark comparisons
-6. expose the workflow through dashboard, API, MCP, and ops surfaces
+Build one honest failure-catalog slice before expanding surfaces:
+1. detect one high-confidence failure mode from real transcript-shaped input
+2. persist the resulting candidate artifact with provenance
+3. validate that slice with automated coverage and explicit acceptance testing
+4. only then broaden ingestion, review, packaging, and downstream eval workflows
 
 ## Phase 0. Product foundation
 Goal: establish shared language and execution order.
@@ -21,75 +19,87 @@ Deliverables:
 - acceptance testing template
 - implementation plan
 
-## Phase 1. Failure catalog MVP
-Goal: create the first reliable corpus of real mistakes.
+## Phase 1. A2 explicit correction MVP
+Goal: finish one real implementation slice for explicit user corrections.
 
-Implement first:
-- P1 plugin skeleton
-- A1 transcript ingestion
-- A2 explicit correction detection
-- B1 typed mistake record schema and persistence
-- B2 review queue with approve or dismiss flow
+Primary story:
+- A2 Detect explicit user corrections
+
+Supporting work allowed in this phase:
+- only the minimum storage and transcript-shaped input contract required to satisfy A2
+- automated tests and acceptance artifacts needed to validate A2 honestly
+
+Do first:
+- implement a transcript-shaped input contract sufficient for A2 fixtures or imports
+- detect explicit correction language from user turns
+- associate each correction with the immediately preceding assistant turn being corrected
+- persist a candidate artifact that stores the bad behavior, corrected expectation, and provenance needed by A2
+- update `docs/acceptance-a2-detect-explicit-user-corrections.md` to match the new implementation and evidence
+
+Do not include in the first PR:
+- generic transcript ingestion beyond what A2 needs
+- broad failure-mining scaffolds
+- review queue or curation workflow
+- plugin runtime packaging
+- dashboard, API, MCP, or benchmarking surfaces
+- claims that A1, B1, B2, or P1 are fully implemented
 
 Why this order:
-- A2 gives the highest-signal source of real failures
-- B1 is the minimum durable artifact
-- B2 prevents garbage from contaminating the eval corpus
-- P1 keeps the system aligned with final packaging from day one
+- A2 is the highest-signal failure source in the story set
+- a full A2 slice proves the repo can turn a real correction into a durable candidate artifact
+- this avoids rebuilding the deleted broad scaffold and keeps the next PR reviewable
 
 Exit criteria:
-- system ingests session slices
-- explicit corrections produce candidate records
-- reviewer can approve, edit, dismiss, or merge
-- evidence and provenance are preserved
+- a transcript-shaped fixture or import can be processed for A2
+- explicit correction phrases are detected reliably enough for the MVP pattern set
+- the corrected assistant turn is linked correctly
+- the stored candidate artifact contains both bad behavior and corrected expectation
+- automated tests cover the main positive, negative, and key edge paths for A2
+- the A2 acceptance doc records what was run, what passed, and what gaps remain
 
-## Phase 2. Eval creation and safe data handling
-Goal: turn curated failures into rerunnable eval assets.
+## Phase 2. Input hardening and typed mistake records
+Goal: broaden the evidence path and formalize the candidate shape after A2 is real.
 
 Implement next:
+- A1 transcript ingestion beyond the A2-specific contract
+- B1 full typed mistake record shape and validation
 - G2 privacy and sanitization boundaries
+
+## Phase 3. Review and curation loop
+Goal: keep the growing failure corpus clean.
+
+Implement next:
+- B2 review and curation workflow
 - A3 implicit failure heuristics
 - A4 clustering into mistake families
+
+## Phase 4. Eval creation and comparison
+Goal: turn curated failures into useful eval assets.
+
+Implement next:
 - C1 mistake-to-eval conversion
 - C3 eval family model
 - C4 rubric model and scoring spec
-- P3 initial HTTP API
-
-## Phase 3. Benchmarking and first human-facing comparisons
-Goal: make the corpus useful for model and prompt decisions.
-
-Implement next:
 - D1 compare models on a suite
 - D2 compare prompt or instruction variants
-- F1 dashboard overview
-- F2 family detail and evidence drilldown
-- F3 comparison views
-- P2 MCP interface
 
-## Phase 4. Operational hardening and portfolio management
-Goal: make the system dependable and broadly useful.
+## Phase 5. Human-facing and operational surfaces
+Goal: expose and harden the system after the core loop is real.
 
 Implement next:
-- B3 severity and frequency tracking
-- D3 regression suite and thresholds
-- D4 weighted task-distribution analysis
-- E2 intervention recommendations
-- E3 trend tracking over time
-- F4 corpus management tools
-- G1 export workflows
-- G3 scheduled benchmark reruns
-- P4 research compatibility layer
+- P1 OpenClaw plugin packaging
+- P2 MCP interface
+- P3 initial HTTP API
+- F1, F2, and F3 dashboard views
+- B3, D3, D4, E2, E3, F4, G1, G3, and P4
 
-## Phase 5. Guarded optimization workflow
-Goal: improve behavior without quietly overfitting.
+## Recommended first implementation PR
+If the next PR is meant to start real implementation, it should be only the A2 slice described in `docs/plan-a2-explicit-correction-mvp.md`.
 
-Implement last:
-- E1 hill-climbing or guided prompt optimization
-
-## Recommended first thin slice
-If we want the first implementation PR after this docs PR to prove the direction, it should include:
-- plugin skeleton
-- mistake candidate schema
-- transcript ingestion stub
-- explicit correction detector
-- basic review queue artifact or API
+That PR should prove one path end to end:
+- transcript-shaped input
+- explicit correction detection
+- assistant-turn association
+- candidate persistence
+- A2-focused automated tests
+- current A2 acceptance evidence
