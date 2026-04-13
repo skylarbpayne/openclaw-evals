@@ -95,24 +95,50 @@ This artifact may be narrower than the eventual full B1 typed record, but it mus
 - avoid introducing package or plugin boundaries unless strictly required for A2
 - keep naming and data shape compatible with future B1 expansion where reasonable, but do not overbuild B1 now
 
-## Acceptance approach
+## Test plan
+The A2 implementation PR should be validated in three layers.
+
+### 1. Unit tests
+Small fixture-based tests for the detector and association logic.
+
+Required coverage:
+1. **Positive detection**
+   - explicit correction phrase after an assistant turn produces one candidate
+2. **Negative detection**
+   - ordinary user response produces no candidate
+3. **Edge: no corrected assistant turn**
+   - correction-like phrase without a prior assistant turn produces no false positive
+4. **Association correctness**
+   - the candidate links to the intended prior assistant turn
+5. **Provenance retention**
+   - session id and turn range survive into the persisted artifact
+
+### 2. Fixture-level integration test
+Use at least one transcript-shaped fixture that resembles a real session.
+
+Required flow:
+- load fixture
+- run A2 detection
+- persist candidate artifact
+- assert stored artifact shape and required fields
+
+This is the minimum end-to-end proof for the A2 slice.
+
+### 3. Story acceptance artifact
 Use `docs/acceptance-a2-detect-explicit-user-corrections.md` as the story-level acceptance artifact.
 
 That doc must be updated during implementation to include:
 - what test fixtures were used
-- what automated tests were run
-- what passed
-- what key gaps remain
+- exact automated test commands that were run
+- pass/fail result for each acceptance case
+- what key gaps remain unvalidated
 
-Automated validation should cover:
-1. **Positive path**
-   - explicit correction phrase after an assistant turn produces a candidate
-2. **Negative path**
-   - ordinary user response does not produce a candidate
-3. **Key edge path**
-   - correction-like phrase without a prior assistant turn does not produce a false candidate
-4. **Provenance path**
-   - candidate retains required source session and turn linkage
+## Acceptance approach
+The A2 PR should not be called done based on detector unit tests alone.
+The acceptance posture must combine:
+- passing automated tests
+- at least one passing fixture-level end-to-end case
+- updated acceptance documentation with real evidence
 
 ## Definition of done
 A fresh A2 PR counts as done only when:
