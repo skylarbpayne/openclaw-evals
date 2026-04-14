@@ -1,9 +1,10 @@
-import { mkdir, readFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { runA2 } from '../index.js';
 import { createReviewApi } from '../review/api.js';
 import { ReviewRepository } from '../review/review-repository.js';
 import { convertApprovedCandidateToEval } from '../evals/convert-candidate-to-eval.js';
+import { importOpenClawSessionLog } from '../ingest/openclaw-session-import.js';
 
 export function createOpenClawEvalsPlugin(config = {}) {
   const outputDir = path.resolve(config.outputDir ?? '.openclaw-evals');
@@ -74,6 +75,19 @@ export function createOpenClawEvalsPlugin(config = {}) {
         candidates: await reviewApi.listCandidates(),
         evalCases: converted.map((entry) => entry.evalCase),
       };
+    },
+
+    async processOpenClawSessionLog({ sessionLogPath, decisionsPath } = {}) {
+      if (!sessionLogPath) {
+        throw new Error('sessionLogPath is required');
+      }
+
+      await mkdir(outputDir, { recursive: true });
+
+      const transcript = await importOpenClawSessionLog(sessionLogPath);
+      const tempTranscriptPath = path.join(outputDir, `${transcript.sessionId}.transcript.json`);
+      await writeFile(tempTranscriptPath, `${JSON.stringify(transcript, null, 2)}\n`, 'utf8');
+      return this.processTranscriptFile({ transcriptPath: tempTranscriptPath, decisionsPath });
     },
   };
 }
