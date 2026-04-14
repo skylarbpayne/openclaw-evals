@@ -1,0 +1,30 @@
+{
+  "id": "openclaw-evals",
+  "name": "OpenClaw Evals",
+  "description": "Failure mining, review, eval generation, and thin local analytics for OpenClaw conversations.",
+  "version": "0.1.0",
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "outputDir": {
+        "type": "string",
+        "description": "Directory used for the local eval registry and generated artifacts."
+      },
+      "reviewer": {
+        "type": "string",
+        "description": "Default reviewer name applied during plugin-driven review actions."
+      }
+    }
+  },
+  "uiHints": {
+    "outputDir": {
+      "label": "Output directory",
+      "placeholder": ".openclaw-evals"
+    },
+    "reviewer": {
+      "label": "Default reviewer",
+      "placeholder": "Palmer"
+    }
+  }
+}
