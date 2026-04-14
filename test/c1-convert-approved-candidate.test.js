@@ -21,10 +21,16 @@ test('C1-POS-1 converts an approved candidate into an eval-case artifact', async
     assert.equal(result.evalCase.sourceCandidateId, 'a2-session-explicit-1-1-2');
     assert.equal(result.evalCase.expectedBehavior, "That's wrong, I asked for a summary not an email.");
     assert.equal(result.evalCase.scoring.strategy, 'rule-based-review');
+    assert.equal(result.evalCase.scoring.grading.mode, 'rule-based');
+    assert.equal(result.evalCase.scoring.grading.judgePromptVersion, null);
+    assert.match(result.evalCase.scoring.grading.rubricText, /Expected behavior:/);
+    assert.equal(result.evalCase.scoring.grading.checks[0].type, 'contains-expectation');
+    assert.equal(result.evalCase.scoring.grading.checks[1].type, 'avoid-known-bad-pattern');
 
     const reloaded = await new EvalCaseStore(outputDir).read('eval-a2-session-explicit-1-1-2');
     assert.equal(reloaded.evalCaseId, 'eval-a2-session-explicit-1-1-2');
     assert.equal(reloaded.provenance.sourceSessionId, 'session-explicit-1');
+    assert.equal(reloaded.scoring.grading.mode, 'rule-based');
   } finally {
     await rm(outputDir, { recursive: true, force: true });
   }

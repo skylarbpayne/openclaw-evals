@@ -25,7 +25,7 @@ Purpose: track each user story from definition through implementation and valida
 | C1 | Generate minimal repro eval | Eval generation | approved-candidate to eval-case converter, eval-case artifact CLI | Phase 6 | In progress | Skylar | Current slice is the deterministic C1 MVP described in `docs/plan-c1-minimal-repro-eval-mvp.md`, converting approved candidates into inspectable eval-case artifacts. |
 | C2 | Expand variants | Eval generation | variant generator | Phase 3 | Not started | Skylar | Synthetic after real cases |
 | C3 | Create eval families | Eval generation, Registry | family model, family editor | Phase 2 | Not started | Skylar | Depends on C1 and A4 |
-| C4 | Attach grading rubrics | Eval generation, Scoring | rubric schema, rubric editor | Phase 2 | Not started | Skylar | Prefer rule-based first |
+| C4 | Attach grading rubrics | Eval generation, Scoring | grading metadata schema on eval artifacts, deterministic rubric attachment | Phase 6 | In progress | Skylar | Current slice is the grading-rubrics MVP described in `docs/plan-c4-grading-rubrics-mvp.md`, adding structured scoring metadata to generated eval cases while keeping rule-based checks first. |
 | D1 | Compare models on suite | Eval runner, Results analytics | run orchestrator, comparison report | Phase 3 | Not started | Skylar | First benchmark slice |
 | D2 | Test prompt variants | Eval runner, Results analytics | prompt version registry, compare runner | Phase 3 | Not started | Skylar | Same infra as D1 |
 | D3 | Catch regressions before rollout | Eval runner, Results analytics | protected regression suite, thresholds | Phase 4 | Not started | Skylar | Gate after confidence |
