@@ -40,5 +40,7 @@ function validateTurn(turn, index) {
     role: turn.role,
     content: turn.content,
     timestamp: turn.timestamp ?? null,
+    kind: turn.kind ?? 'text',
+    errorMessage: turn.errorMessage ?? null,
   };
 }
