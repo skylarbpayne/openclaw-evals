@@ -1,13 +1,13 @@
-# Acceptance Test - B2 Review and curate candidates
+# Acceptance Test - B2 Review and curate mistake candidates
 
 ## Story metadata
 - Story ID: B2
 - Story title: Review and curate mistake candidates
 - Owner: Skylar
 - Related architecture subsystem(s): Review and curation layer
-- Related PR(s): https://github.com/skylarpayne/openclaw-evals/pull/3
+- Related PR(s): local working tree after `e534e44`
 - Environment: local repo
-- Build or commit under test: `ea187c2` and later
+- Build or commit under test: working tree after B2 review-curation MVP
 
 ## Intent
 - User value: curate discovered failures instead of letting noisy candidates flow straight into the eval corpus
@@ -19,49 +19,58 @@
 3. Preserves audit history of edits and decisions
 
 ## Preconditions
-- Data setup: repository object implementing `list()` and `review()` methods
-- Required services: none
-- Test accounts or fixtures: none
+- Data setup: transcript fixture persisted through the existing A2 path into JSON candidate artifacts
+- Required services: none beyond local Node.js execution
+- Test accounts or fixtures: `test/fixtures/a2-explicit-correction.json`
 
-## Test cases
+## Automated commands run
+```bash
+node --test test/a2-explicit-correction.test.js test/b2-review-curation.test.js
+```
+
+## Results by acceptance case
 
 ### Positive path
-| Case ID | Scenario | Steps | Expected result | Actual result | Pass or fail | Evidence |
-|---|---|---|---|---|---|---|
-| POS-1 | List mistakes through review API | Call `createReviewApi(repository).listMistakes()` | Returns `repository.list()` output | Implemented in code | Pass | `src/review/api.js` |
-| POS-2 | Submit review decision through review API | Call `createReviewApi(repository).reviewMistake(id, decision)` | Delegates to `repository.review(id, decision)` | Implemented in code | Pass | `src/review/api.js` |
+| Case ID | Scenario | Expected result | Actual result | Status |
+|---|---|---|---|---|
+| B2-POS-1 | List persisted candidates through review API | Returns candidate artifacts from disk | One persisted candidate returned with default `candidate` status | Pass |
+| B2-POS-2 | Approve candidate | Candidate becomes `approved` and audit entry is appended | Approved status persisted with `approve` audit event | Pass |
+| B2-POS-3 | Dismiss candidate | Candidate becomes `dismissed` and audit entry is appended | Dismissed status persisted with `dismiss` audit event | Pass |
+| B2-POS-4 | Edit candidate | Candidate fields updated without losing provenance/source linkage | Edited fields persisted, provenance and source turn range preserved, `edit` audit event appended | Pass |
+| B2-POS-5 | Merge candidate into another | Source candidate marked `merged` with target pointer and audit entry | Source candidate persisted as `merged` with `mergedInto` target and `merge` audit event | Pass |
 
 ### Negative path
-| Case ID | Scenario | Steps | Expected result | Actual result | Pass or fail | Evidence |
-|---|---|---|---|---|---|---|
-| NEG-1 | Missing decision object | Call `reviewMistake(id)` without decision | Throws `decision is required` | Implemented in code, not yet automated | Partial | `src/review/api.js` |
+| Case ID | Scenario | Expected result | Actual result | Status |
+|---|---|---|---|---|
+| B2-NEG-1 | Missing decision object | Review API rejects action | Throws `decision is required` | Pass |
 
 ### Edge cases
-| Case ID | Scenario | Steps | Expected result | Actual result | Pass or fail | Evidence |
-|---|---|---|---|---|---|---|
-| EDGE-1 | Approve decision | Provide repository that accepts approve decision | API should pass through correctly | Not acceptance-tested yet | Partial | `src/review/api.js` |
-| EDGE-2 | Edit, dismiss, or merge decision | Provide repository that accepts different decisions | API should pass through correctly | Not acceptance-tested yet | Partial | `src/review/api.js` |
+| Case ID | Scenario | Expected result | Actual result | Status |
+|---|---|---|---|---|
+| B2-EDGE-1 | End-to-end transcript to approved reviewed candidate | A2 candidate can be approved and reloaded with audit trail intact | Candidate persisted from transcript fixture, approved through review API, reloaded with `approved` status and one audit event | Pass |
 
-## Observability and evidence
-- Logs checked: none
-- Metrics checked: none
-- Output artifacts: review API function behavior only
-- Transcript or run ids: none
+## Evidence summary
+The implemented B2 repo-local slice now provides:
+- file-backed candidate persistence with default status/audit normalization in `src/repository/candidate-store.js`
+- review repository with approve, dismiss, edit, merge, list, and get behavior in `src/review/review-repository.js`
+- minimal review API in `src/review/api.js`
+- B2-focused automated tests in `test/b2-review-curation.test.js`
+- end-to-end proof that the A2 artifact path can flow into a reviewed candidate state
+
+## What remains unvalidated or out of scope
+- dashboard review queue UI
+- OpenClaw plugin runtime integration
+- MCP or HTTP API surfaces
+- SQLite-backed registry
+- promotion into eval families beyond a minimal merge pointer
+- richer typed mistake record semantics from full B1
 
 ## Result summary
-- Overall verdict: Fails as full B2 implementation, passes only as API scaffold
-- Known gaps:
-  - no automated tests
-  - no repository behavior contract tests
-  - no explicit approve, edit, dismiss, merge semantics implemented here
-  - no audit history at all
-- Follow-up bugs or stories:
-  - implement real review repository and decisions model
-  - add tests for review behavior
-  - add audit trail
-- Recommended release decision: do not claim B2 complete; only claim an early review API scaffold
+- Overall verdict: B2 repo-local curation MVP passes its current acceptance bar
+- Release posture: acceptable as the next honest closed-loop slice after A2
+- Known gaps: still file-backed and repo-local, not yet a full registry or operator surface
 
 ## Sign-off
 - Tested by: Palmer
-- Tested at: 2026-04-12
-- Approval status: scaffold only, not complete
+- Tested at: 2026-04-13
+- Approval status: B2 repo-local curation MVP accepted
