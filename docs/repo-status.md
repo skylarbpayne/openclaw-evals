@@ -1,6 +1,6 @@
 # Repo Status
 
-Last updated: 2026-04-13
+Last updated: 2026-04-14
 
 ## What exists now
 
@@ -51,7 +51,8 @@ Implemented:
 - B3 severity/frequency MVP with explicit ranking metadata on stored candidates
 - C3-lite runtime failure families MVP with deterministic family metadata on repeated runtime/provider failure artifacts
 - D1-lite local eval runner MVP with durable pass/fail result artifacts over existing eval cases
-- D1 real captured response run MVP in progress, focused on grading real Palmer/OpenClaw captured assistant responses against existing eval artifacts with preserved response provenance
+- D1 real captured response run MVP with preserved response provenance on scored real Palmer/OpenClaw captured assistant responses
+- D2-lite run summary comparison MVP in progress, focused on comparing persisted D1 result artifacts for the same eval case
 - acceptance-tested end-to-end loop from transcript fixture to reviewed candidate
 - acceptance-tested end-to-end loop from a real runtime failure session fixture to approved eval artifact
 
