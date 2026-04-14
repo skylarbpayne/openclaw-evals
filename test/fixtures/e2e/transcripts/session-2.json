@@ -1,0 +1,23 @@
+{
+  "sessionId": "session-explicit-2",
+  "channel": "discord",
+  "model": "gpt-5.4",
+  "instructionVersion": "2026-04-13-a2",
+  "turns": [
+    {
+      "role": "user",
+      "content": "Give me three bullet points from this update.",
+      "timestamp": "2026-04-13T18:00:00Z"
+    },
+    {
+      "role": "assistant",
+      "content": "Here's a paragraph version with extra explanation.",
+      "timestamp": "2026-04-13T18:00:10Z"
+    },
+    {
+      "role": "user",
+      "content": "You missed the request. I asked for three bullet points.",
+      "timestamp": "2026-04-13T18:00:20Z"
+    }
+  ]
+}

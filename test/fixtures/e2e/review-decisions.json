@@ -1,0 +1,22 @@
+[
+  {
+    "action": "approve",
+    "candidateId": "a2-session-explicit-1-1-2",
+    "decision": {
+      "reviewer": "Skylar",
+      "rationale": "clear explicit correction"
+    }
+  },
+  {
+    "action": "edit",
+    "candidateId": "a2-session-explicit-2-1-2",
+    "patch": {
+      "title": "Requested bullets but returned paragraph",
+      "correctedExpectation": "Return exactly three bullet points, not a paragraph."
+    },
+    "decision": {
+      "reviewer": "Skylar",
+      "rationale": "tighten the phrasing"
+    }
+  }
+]
