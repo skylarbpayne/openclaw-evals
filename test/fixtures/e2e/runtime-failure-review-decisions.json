@@ -1,0 +1,11 @@
+[
+  {
+    "candidateId": "a3-206b827e-f3a3-4969-bde3-0bb36bb53ccf-0-1",
+    "action": "approve",
+    "decision": {
+      "reviewer": "Skylar",
+      "rationale": "Approve real runtime failure loop for end-to-end eval proof"
+    },
+    "convertToEval": true
+  }
+]
