@@ -7,6 +7,7 @@ import path from 'node:path';
 import { validateTranscript } from '../src/schemas/transcript.js';
 import { detectExplicitCorrections } from '../src/detectors/explicit-correction.js';
 import { runA2 } from '../src/index.js';
+import { CandidateStore } from '../src/repository/candidate-store.js';
 
 const explicitTranscript = {
   sessionId: 'unit-positive',
@@ -91,9 +92,9 @@ test('INT-1 persists a candidate artifact from fixture input end to end', async 
     assert.equal(result.candidates.length, 1);
     assert.equal(result.saved.length, 1);
 
-    const savedPath = result.saved[0].filePath;
-    const savedArtifact = JSON.parse(await readFile(savedPath, 'utf8'));
+    const savedArtifact = await new CandidateStore(outputDir).read('a2-session-explicit-1-1-2');
 
+    assert.equal(result.saved[0].filePath.endsWith('mistake-registry.sqlite'), true);
     assert.equal(savedArtifact.storyId, 'A2');
     assert.equal(savedArtifact.mistakeType, 'explicit_user_correction');
     assert.equal(savedArtifact.sourceSessionId, 'session-explicit-1');

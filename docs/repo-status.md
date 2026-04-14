@@ -9,7 +9,7 @@ This repo is no longer docs-only.
 Implemented repo-local MVP pieces:
 - transcript validation in `src/schemas/transcript.js`
 - explicit correction detector in `src/detectors/explicit-correction.js`
-- durable JSON-file candidate persistence in `src/repository/candidate-store.js`
+- SQLite-backed candidate persistence in `src/repository/candidate-store.js`
 - A2 runner entrypoint in `src/index.js` and `src/cli/run-a2.js`
 - repo-local review repository in `src/review/review-repository.js`
 - repo-local review API in `src/review/api.js`
@@ -37,14 +37,13 @@ Status: in progress
 
 Implemented:
 - A2 explicit correction detection, repo-local and acceptance-tested
-- durable JSON-file candidate persistence for narrow candidate artifacts
+- B1 SQLite-backed registry MVP for the current narrow candidate record
 - B2 repo-local review and curation MVP with approve, dismiss, edit, merge, and audit history
 - acceptance-tested end-to-end loop from transcript fixture to reviewed candidate
 
 Not yet complete:
 - broader transcript ingestion beyond the A2 contract
-- full B1 typed mistake record model
-- SQLite-backed registry
+- fuller B1 typed mistake record model beyond the narrow current payload boundary
 - real OpenClaw runtime integration
 - dashboard, MCP, or HTTP API operator surfaces
 
@@ -71,15 +70,11 @@ The current implementation still lives mostly in `src/`. That is fine for the fi
 
 Do these next, in this order:
 
-1. **Make persistence more real**
-   - replace JSON-file candidate storage with SQLite-backed storage for candidates and curation decisions
-   - keep schema portable to Postgres later
+1. **Formalize B1 further**
+   - turn the current narrow persisted candidate payload into a fuller typed mistake record
+   - preserve compatibility with the current A2 and B2 loop
 
-2. **Formalize B1 honestly**
-   - turn the current narrow candidate artifact into a fuller typed mistake record
-   - preserve compatibility with the A2 and B2 loop
-
-3. **Wire broader transcript ingestion**
+2. **Wire broader transcript ingestion**
    - define the first real input contract for session slices beyond the narrow A2 fixture path
    - support importing transcript batches or session exports
 
