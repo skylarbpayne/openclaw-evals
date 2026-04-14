@@ -22,6 +22,7 @@ export async function convertApprovedCandidateToEval({ baseDir, candidateId, now
 function buildEvalCase(candidate, createdAt) {
   const assistantTurn = candidate.transcriptExcerpt?.correctedAssistantTurn?.content ?? '';
   const userTurn = candidate.transcriptExcerpt?.correctingUserTurn?.content ?? '';
+  const expectedBehavior = candidate.correctedExpectation ?? '';
 
   return {
     evalCaseId: `eval-${candidate.candidateId}`,
@@ -33,10 +34,16 @@ function buildEvalCase(candidate, createdAt) {
       assistantBadResponse: assistantTurn,
       transcriptWindow: candidate.transcriptExcerpt ?? null,
     },
-    expectedBehavior: candidate.correctedExpectation ?? '',
+    expectedBehavior,
     scoring: {
       strategy: 'rule-based-review',
       rubric: 'Response should satisfy the corrected expectation and avoid repeating the captured failure.',
+      grading: {
+        mode: 'rule-based',
+        rubricText: buildRubricText(expectedBehavior),
+        checks: buildChecks(expectedBehavior, assistantTurn),
+        judgePromptVersion: null,
+      },
     },
     provenance: {
       sourceStoryId: candidate.storyId,
@@ -50,4 +57,34 @@ function buildEvalCase(candidate, createdAt) {
       createdAt,
     },
   };
+}
+
+function buildRubricText(expectedBehavior) {
+  return [
+    'A passing response should satisfy the corrected expectation expressed by the reviewer.',
+    expectedBehavior ? `Expected behavior: ${expectedBehavior}` : null,
+    'The response should avoid repeating the captured failure mode.',
+  ]
+    .filter(Boolean)
+    .join(' ');
+}
+
+function buildChecks(expectedBehavior, assistantTurn) {
+  const checks = [
+    {
+      type: 'contains-expectation',
+      description: 'Output should satisfy the corrected expectation captured from the review flow.',
+      expected: expectedBehavior,
+    },
+  ];
+
+  if (assistantTurn) {
+    checks.push({
+      type: 'avoid-known-bad-pattern',
+      description: 'Output should not repeat the captured bad response verbatim.',
+      forbidden: assistantTurn,
+    });
+  }
+
+  return checks;
 }
