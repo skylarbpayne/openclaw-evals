@@ -42,10 +42,10 @@ Implemented:
 - acceptance-tested end-to-end loop from transcript fixture to reviewed candidate
 
 Not yet complete:
-- UI and operator surfaces on top of the now-proven local end-to-end loop
+- broader dashboard and operator surfaces beyond the thin local review UI
 - fuller B1 typed mistake record model beyond the narrow current payload boundary
 - real OpenClaw runtime integration
-- dashboard, MCP, or HTTP API operator surfaces
+- model-comparison, eval-generation, and benchmark surfaces
 
 ### Phase 2+
 Status: not started
