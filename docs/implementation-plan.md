@@ -57,19 +57,25 @@ Exit criteria:
 - automated tests cover the main positive, negative, and key edge paths for A2
 - the A2 acceptance doc records what was run, what passed, and what gaps remain
 
-## Phase 2. Input hardening and typed mistake records
-Goal: broaden the evidence path and formalize the candidate shape after A2 is real.
-
-Implement next:
-- A1 transcript ingestion beyond the A2-specific contract
-- B1 full typed mistake record shape and validation
-- G2 privacy and sanitization boundaries
-
-## Phase 3. Review and curation loop
-Goal: keep the growing failure corpus clean.
+## Phase 2. Review and curation loop
+Goal: complete the first honest closed loop after A2 by making persisted candidates reviewable.
 
 Implement next:
 - B2 review and curation workflow
+  - approve, dismiss, edit, and merge actions on persisted candidates
+  - append-only audit history for review decisions and edits
+  - one end-to-end transcript-to-review test proving the loop
+- B1 minimal candidate state expansion only as required to support B2 honestly
+
+Use `docs/plan-b2-review-curation-mvp.md` as the scoped implementation guide for this slice.
+
+## Phase 3. Input hardening and typed mistake records
+Goal: broaden the evidence path and formalize the candidate shape after the review loop is real.
+
+Implement next:
+- A1 transcript ingestion beyond the A2-specific contract
+- B1 fuller typed mistake record shape and validation
+- G2 privacy and sanitization boundaries
 - A3 implicit failure heuristics
 - A4 clustering into mistake families
 
