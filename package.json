@@ -9,6 +9,7 @@
     "a2:run": "node src/cli/run-a2.js",
     "e2e:first-loop": "node src/cli/run-first-loop.js test/fixtures/e2e/transcripts test/fixtures/e2e/review-decisions.json",
     "ui:review": "node src/cli/run-review-ui.js",
-    "c1:convert": "node src/cli/convert-approved-candidate.js"
+    "c1:convert": "node src/cli/convert-approved-candidate.js",
+    "p1:plugin-smoke": "node --test test/p1-honest-plugin.test.js"
   }
 }

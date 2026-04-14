@@ -1,0 +1,11 @@
+[
+  {
+    "action": "approve",
+    "candidateId": "a2-session-explicit-1-1-2",
+    "decision": {
+      "reviewer": "Skylar",
+      "rationale": "real plugin bridge smoke test"
+    },
+    "convertToEval": true
+  }
+]

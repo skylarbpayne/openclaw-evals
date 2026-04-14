@@ -40,7 +40,7 @@ Purpose: track each user story from definition through implementation and valida
 | G1 | Export cases for offline analysis | Research bridge | export API, markdown and JSON export | Phase 4 | Not started | Skylar | Useful external hook |
 | G2 | Preserve privacy boundaries | Ingestion, Export, Registry | redaction policy, sanitization controls | Phase 2 | Not started | Skylar | Non-optional |
 | G3 | Re-run benchmarks on schedule | Plugin runtime, Eval runner | cron runner, snapshot history | Phase 4 | Not started | Skylar | Operational hardening |
-| P1 | Install as OpenClaw plugin | Plugin runtime | plugin module, config, migrations | Phase 5 | Not started | Skylar | Packaging should follow a proven core failure-catalog slice, not precede it. |
+| P1 | Install as OpenClaw plugin | Plugin runtime | plugin entrypoint, minimal config, honest bridge into existing pipeline | Phase 6 | In progress | Skylar | Current slice is the honest plugin MVP described in `docs/plan-p1-honest-plugin-mvp.md`, focused on one real OpenClaw-native path instead of broad packaging claims. |
 | P2 | MCP-first interface | MCP layer | tools and resources contract | Phase 3 | Not started | Skylar | Agent-native access |
 | P3 | API out of the box | API layer | HTTP API spec and handlers | Phase 2 | Not started | Skylar | External integration |
 | P4 | Research compatibility layer | Research bridge, Schemas | exchange schemas, bundle validator | Phase 4 | Not started | Skylar | Artifact boundary |
