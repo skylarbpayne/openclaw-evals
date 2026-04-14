@@ -53,6 +53,7 @@ Implemented:
 - D1-lite local eval runner MVP with durable pass/fail result artifacts over existing eval cases
 - D1 real captured response run MVP with preserved response provenance on scored real Palmer/OpenClaw captured assistant responses
 - D2-lite run summary comparison MVP over persisted D1 result artifacts for the same eval case
+- D3-lite regression gate MVP over persisted run histories with deterministic regression judgments
 - F3-lite comparison view MVP in progress, focused on exposing D2 run comparisons through the thin local UI
 - acceptance-tested end-to-end loop from transcript fixture to reviewed candidate
 - acceptance-tested end-to-end loop from a real runtime failure session fixture to approved eval artifact
