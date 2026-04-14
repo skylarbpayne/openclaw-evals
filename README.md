@@ -20,7 +20,6 @@ This repo starts with product and architecture artifacts for the first implement
 - `docs/acceptance-testing-template.md`
 - `docs/implementation-plan.md`
 
-
 ## First implementation slice
 
 This repo now includes a narrow A2 explicit-correction MVP:

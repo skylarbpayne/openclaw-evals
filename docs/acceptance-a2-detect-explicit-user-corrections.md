@@ -5,9 +5,9 @@
 - Story title: Detect explicit user corrections
 - Owner: Skylar
 - Related architecture subsystem(s): Failure mining
-- Related PR(s): pending A2 implementation PR from `feat/a2-explicit-correction-mvp`
+- Related PR(s): https://github.com/skylarbpayne/openclaw-evals/pull/5
 - Environment: local repo
-- Build or commit under test: working tree for A2 MVP implementation
+- Build or commit under test: `fec33de` and later on `feat/a2-explicit-correction-mvp`
 
 ## Intent
 - User value: turn high-signal user corrections into candidate failure records
