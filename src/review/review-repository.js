@@ -1,28 +1,14 @@
-import { mkdir, readdir } from 'node:fs/promises';
-import path from 'node:path';
 import { CandidateStore } from '../repository/candidate-store.js';
 
 export class ReviewRepository {
   constructor(baseDir, options = {}) {
     this.baseDir = baseDir;
-    this.store = new CandidateStore(baseDir);
+    this.store = new CandidateStore(baseDir, options.storeOptions);
     this.now = options.now ?? (() => new Date().toISOString());
   }
 
   async list() {
-    await mkdir(this.baseDir, { recursive: true });
-    const entries = await readdir(this.baseDir, { withFileTypes: true });
-    const candidateFiles = entries
-      .filter((entry) => entry.isFile() && entry.name.endsWith('.json'))
-      .map((entry) => path.join(this.baseDir, entry.name))
-      .sort();
-
-    const candidates = [];
-    for (const filePath of candidateFiles) {
-      candidates.push(await this.store.readFile(filePath));
-    }
-
-    return candidates;
+    return this.store.list();
   }
 
   async get(candidateId) {

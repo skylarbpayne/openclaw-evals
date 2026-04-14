@@ -69,15 +69,20 @@ Implement next:
 
 Use `docs/plan-b2-review-curation-mvp.md` as the scoped implementation guide for this slice.
 
-## Phase 3. Input hardening and typed mistake records
-Goal: broaden the evidence path and formalize the candidate shape after the review loop is real.
+## Phase 3. Typed mistake record and storage hardening
+Goal: replace the JSON artifact store with a real registry boundary and formalize the persisted candidate record.
 
 Implement next:
+- B1 SQLite mistake registry MVP
+  - replace file-per-candidate storage with SQLite-backed persistence
+  - preserve current A2 and B2 behavior through the storage swap
+  - persist review state and audit history in the registry
 - A1 transcript ingestion beyond the A2-specific contract
-- B1 fuller typed mistake record shape and validation
 - G2 privacy and sanitization boundaries
 - A3 implicit failure heuristics
 - A4 clustering into mistake families
+
+Use `docs/plan-b1-sqlite-mistake-registry-mvp.md` as the scoped implementation guide for this slice.
 
 ## Phase 4. Eval creation and comparison
 Goal: turn curated failures into useful eval assets.
