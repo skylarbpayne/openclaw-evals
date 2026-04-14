@@ -1,6 +1,7 @@
 import { mkdir } from 'node:fs/promises';
 import path from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
+import { attachFamily } from './candidate-family.js';
 import { attachRanking } from './candidate-ranking.js';
 
 export class CandidateStore {
@@ -164,9 +165,9 @@ export class CandidateStore {
 }
 
 function normalizeCandidate(candidate) {
-  return attachRanking({
+  return attachRanking(attachFamily({
     ...candidate,
     status: candidate.status ?? 'candidate',
     auditHistory: Array.isArray(candidate.auditHistory) ? candidate.auditHistory : [],
-  });
+  }));
 }

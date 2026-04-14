@@ -51,6 +51,7 @@ function buildEvalCase(candidate, createdAt) {
       sourceTurnRange: candidate.sourceTurnRange,
       candidateReview: candidate.review ?? null,
       candidateProvenance: candidate.provenance ?? null,
+      candidateFamily: candidate.family ?? null,
     },
     createdFrom: {
       candidateStatus: candidate.status,

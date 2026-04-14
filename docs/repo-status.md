@@ -49,6 +49,7 @@ Implemented:
 - B1 SQLite-backed registry MVP for the current narrow candidate record
 - B2 repo-local review and curation MVP with approve, dismiss, edit, merge, and audit history
 - B3 severity/frequency MVP with explicit ranking metadata on stored candidates
+- C3-lite runtime failure families MVP with deterministic family metadata on repeated runtime/provider failure artifacts
 - acceptance-tested end-to-end loop from transcript fixture to reviewed candidate
 - acceptance-tested end-to-end loop from a real runtime failure session fixture to approved eval artifact
 
