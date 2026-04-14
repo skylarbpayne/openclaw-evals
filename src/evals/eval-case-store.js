@@ -1,4 +1,4 @@
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
 export class EvalCaseStore {
@@ -19,6 +19,13 @@ export class EvalCaseStore {
     const filePath = path.join(this.getDir(), `${evalCaseId}.json`);
     const content = await readFile(filePath, 'utf8');
     return JSON.parse(content);
+  }
+
+  async list() {
+    const dir = this.getDir();
+    await mkdir(dir, { recursive: true });
+    const entries = await readdir(dir);
+    return entries.filter((entry) => entry.endsWith('.json')).sort();
   }
 
   getDir() {
