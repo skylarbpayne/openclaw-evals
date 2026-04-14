@@ -48,12 +48,13 @@ Implemented:
 - A3 repeated runtime/provider failure-loop detection from real OpenClaw session logs
 - B1 SQLite-backed registry MVP for the current narrow candidate record
 - B2 repo-local review and curation MVP with approve, dismiss, edit, merge, and audit history
+- B3 severity/frequency MVP with explicit ranking metadata on stored candidates
 - acceptance-tested end-to-end loop from transcript fixture to reviewed candidate
 - acceptance-tested end-to-end loop from a real runtime failure session fixture to approved eval artifact
 
 Not yet complete:
 - broader dashboard and operator surfaces beyond the thin local review UI
-- deeper OpenClaw runtime integration beyond the current plugin bridge, session-log adapter, runtime-failure mining, and runtime-failure eval-loop slices
+- deeper OpenClaw runtime integration beyond the current plugin bridge, session-log adapter, runtime-failure mining, runtime-failure eval-loop, and severity/frequency slices
 - eval families and benchmark-running surfaces beyond the first C1 plus C4 artifact path
 - fuller B1 typed mistake record model beyond the narrow current payload boundary
 

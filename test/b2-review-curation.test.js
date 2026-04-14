@@ -22,6 +22,8 @@ test('B2-POS-1 lists persisted candidates through the review API', async () => {
     assert.equal(candidates.length, 1);
     assert.equal(candidates[0].status, 'candidate');
     assert.equal(candidates[0].candidateId, 'a2-session-explicit-1-1-2');
+    assert.equal(candidates[0].ranking.severity, 'low');
+    assert.equal(candidates[0].ranking.priorityBand, 'routine');
   } finally {
     await rm(outputDir, { recursive: true, force: true });
   }
