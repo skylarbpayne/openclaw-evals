@@ -43,9 +43,9 @@ Implemented:
 
 Not yet complete:
 - broader dashboard and operator surfaces beyond the thin local review UI
+- eval families, richer rubrics, and benchmark-running surfaces beyond the first C1 artifact path
 - fuller B1 typed mistake record model beyond the narrow current payload boundary
 - real OpenClaw runtime integration
-- model-comparison, eval-generation, and benchmark surfaces
 
 ### Phase 2+
 Status: not started
