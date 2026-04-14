@@ -6,6 +6,7 @@
   "scripts": {
     "test": "node --test",
     "a1:import": "node -e \"import('./src/ingest/transcript-import.js').then(async ({ importTranscriptFile }) => { const transcript = await importTranscriptFile(process.argv[1]); console.log(JSON.stringify(transcript, null, 2)); })\"",
-    "a2:run": "node src/cli/run-a2.js"
+    "a2:run": "node src/cli/run-a2.js",
+    "e2e:first-loop": "node src/cli/run-first-loop.js test/fixtures/e2e/transcripts test/fixtures/e2e/review-decisions.json"
   }
 }

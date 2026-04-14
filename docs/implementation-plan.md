@@ -84,7 +84,17 @@ Implement next:
 
 Use `docs/plan-b1-sqlite-mistake-registry-mvp.md` as the scoped implementation guide for this slice.
 
-## Phase 4. Eval creation and comparison
+## Phase 4. Honest first end-to-end milestone
+Goal: prove the system works as a real local loop before building UI or downstream eval surfaces.
+
+Implement next:
+- one explicit end-to-end path from imported transcript files to reviewed persisted outcomes
+- one automated milestone test covering import, mining, review, and reload from SQLite-backed storage
+- one local CLI entrypoint for the same path
+
+Use `docs/plan-e2e-honest-first-loop-mvp.md` as the scoped implementation guide for this slice.
+
+## Phase 5. Eval creation and comparison
 Goal: turn curated failures into useful eval assets.
 
 Implement next:
@@ -94,7 +104,7 @@ Implement next:
 - D1 compare models on a suite
 - D2 compare prompt or instruction variants
 
-## Phase 5. Human-facing and operational surfaces
+## Phase 6. Human-facing and operational surfaces
 Goal: expose and harden the system after the core loop is real.
 
 Implement next:
