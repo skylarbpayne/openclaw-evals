@@ -35,7 +35,7 @@ Purpose: track each user story from definition through implementation and valida
 | E3 | Track improvements over time | Results analytics, Dashboard | trend views, release timeline | Phase 4 | Not started | Skylar | Needs history |
 | F1 | View top mistakes | Dashboard, Analytics | overview dashboard | Phase 3 | Not started | Skylar | Human visibility |
 | F2 | Drill to evidence | Dashboard, Registry | candidate detail evidence view, transcript excerpt, provenance display | Phase 6 | In progress | Skylar | Narrowly supported through the thin review UI MVP for candidate-level evidence inspection, not full family exploration. |
-| F3 | Review model comparisons | Dashboard, Results analytics | comparison UI | Phase 3 | Not started | Skylar | Backed by D1 and D2 |
+| F3 | Review model comparisons | Dashboard, Results analytics | thin comparison UI, run summary view, delta detail page | Phase 6 | In progress | Skylar | Current slice is `docs/plan-f3-lite-comparison-view-mvp.md`, focused on a narrow local view over D2 comparison summaries rather than a broad dashboard. |
 | F4 | Manage eval corpus | Dashboard, Eval generation | thin local review UI, candidate list/detail pages, approve/dismiss/edit forms | Phase 6 | In progress | Skylar | Current slice is the thin review UI MVP described in `docs/plan-f4-thin-review-ui-mvp.md`, intentionally limited to local candidate review on top of the proven loop. |
 | G1 | Export cases for offline analysis | Research bridge | export API, markdown and JSON export | Phase 4 | Not started | Skylar | Useful external hook |
 | G2 | Preserve privacy boundaries | Ingestion, Export, Registry | redaction policy, sanitization controls | Phase 2 | Not started | Skylar | Non-optional |
