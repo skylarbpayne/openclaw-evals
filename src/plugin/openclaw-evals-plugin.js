@@ -5,11 +5,13 @@ import { createReviewApi } from '../review/api.js';
 import { ReviewRepository } from '../review/review-repository.js';
 import { convertApprovedCandidateToEval } from '../evals/convert-candidate-to-eval.js';
 import { importOpenClawSessionLog } from '../ingest/openclaw-session-import.js';
+import { normalizePluginConfig } from './config.js';
 
 export function createOpenClawEvalsPlugin(config = {}) {
-  const outputDir = path.resolve(config.outputDir ?? '.openclaw-evals');
-  const reviewer = config.reviewer ?? 'Palmer';
-  const now = config.now;
+  const normalized = normalizePluginConfig(config);
+  const outputDir = normalized.outputDir;
+  const reviewer = normalized.reviewer;
+  const now = normalized.now;
 
   return {
     id: 'openclaw-evals',
@@ -88,6 +90,24 @@ export function createOpenClawEvalsPlugin(config = {}) {
       const tempTranscriptPath = path.join(outputDir, `${transcript.sessionId}.transcript.json`);
       await writeFile(tempTranscriptPath, `${JSON.stringify(transcript, null, 2)}\n`, 'utf8');
       return this.processTranscriptFile({ transcriptPath: tempTranscriptPath, decisionsPath });
+    },
+
+    async mineSessionLog({ sessionLogPath } = {}) {
+      if (!sessionLogPath) {
+        throw new Error('sessionLogPath is required');
+      }
+
+      await mkdir(outputDir, { recursive: true });
+
+      const transcript = await importOpenClawSessionLog(sessionLogPath);
+      const mined = await runA2({ transcript, outputDir });
+      return {
+        outputDir,
+        transcriptSessionId: mined.transcript.sessionId,
+        minedCount: mined.candidates.length,
+        candidateIds: mined.candidates.map((candidate) => candidate.candidateId),
+        candidates: mined.candidates,
+      };
     },
   };
 }

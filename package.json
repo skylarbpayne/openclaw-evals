@@ -3,12 +3,20 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "openclaw": {
+    "extensions": ["./src/plugin/openclaw-evals-plugin.js"],
+    "install": {
+      "localPath": ".",
+      "defaultChoice": "local"
+    }
+  },
   "scripts": {
     "test": "node --test",
     "a1:import": "node -e \"import('./src/ingest/transcript-import.js').then(async ({ importTranscriptFile }) => { const transcript = await importTranscriptFile(process.argv[1]); console.log(JSON.stringify(transcript, null, 2)); })\"",
     "a2:run": "node src/cli/run-a2.js",
     "e2e:first-loop": "node src/cli/run-first-loop.js test/fixtures/e2e/transcripts test/fixtures/e2e/review-decisions.json",
     "ui:review": "node src/cli/run-review-ui.js",
+    "plugin:run": "node src/cli/run-plugin-flow.js",
     "c1:convert": "node src/cli/convert-approved-candidate.js",
     "d1:run": "node src/cli/run-eval-case.js",
     "d3:run": "node src/cli/run-d3-lite.js",
