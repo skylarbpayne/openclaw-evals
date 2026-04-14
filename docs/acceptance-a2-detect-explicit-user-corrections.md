@@ -5,13 +5,20 @@
 - Story title: Detect explicit user corrections
 - Owner: Skylar
 - Related architecture subsystem(s): Failure mining
-- Related PR(s): https://github.com/skylarbpayne/openclaw-evals/pull/3
+- Related PR(s): https://github.com/skylarbpayne/openclaw-evals/pull/5
 - Environment: local repo
-- Build or commit under test: `ea187c2` and later
+- Build or commit under test: `fec33de` and later on `feat/a2-explicit-correction-mvp`
 
 ## Intent
 - User value: turn high-signal user corrections into candidate failure records
 - Risk if this fails: the MVP misses the best real failure source and the initial eval corpus is weak or noisy
+
+## Current repo posture
+This repo now contains a narrow A2 implementation slice.
+It supports transcript-shaped local input, explicit correction detection, prior-assistant association, durable JSON artifact persistence, and automated tests.
+
+This is still a repo-local developer-operated slice.
+It is not yet an installed OpenClaw plugin and does not claim A1, B1, B2, or P1 completion.
 
 ## Acceptance criteria under test
 1. Detect correction language like “that’s wrong,” “don’t do that,” “you missed,” and “I asked for X”
@@ -19,49 +26,60 @@
 3. Store both bad behavior and corrected expectation in the candidate artifact
 
 ## Preconditions
-- Data setup: transcript-shaped session with assistant turn followed by explicit correction
-- Required services: none
-- Test accounts or fixtures: none
+- Data setup: transcript-shaped fixture with assistant turn followed by explicit correction
+- Required services: none beyond local Node.js execution
+- Test accounts or fixtures: `test/fixtures/a2-explicit-correction.json`
 
-## Test cases
+## Test fixtures used
+- `test/fixtures/a2-explicit-correction.json`
+  - session id: `session-explicit-1`
+  - assistant produces the wrong artifact type
+  - user explicitly corrects with: `That's wrong, I asked for a summary not an email.`
 
-### Positive path
-| Case ID | Scenario | Steps | Expected result | Actual result | Pass or fail | Evidence |
-|---|---|---|---|---|---|---|
-| POS-1 | Detect clear explicit correction | Run automated test with assistant turn followed by `that's wrong, I asked for a summary not an email` | One mistake candidate returned | Automated test passes | Pass | `test/explicit-correction.test.js` |
-| POS-2 | Candidate classified correctly | Inspect returned candidate | `mistakeType` is `explicit_user_correction` and `sourceSessions[0]` matches session id | Automated test passes | Pass | `test/explicit-correction.test.js` |
-| POS-3 | Candidate captures bad behavior and corrected expectation | Inspect candidate body | `transcriptExcerpt` includes assistant + user correction, `expectedBehavior` stores the correction text | Implemented in code, not yet directly asserted in automated test | Partial | `src/detectors/explicit-correction.js` |
+## Automated commands run
+```bash
+npm test
+node src/cli/run-a2.js test/fixtures/a2-explicit-correction.json
+```
 
-### Negative path
-| Case ID | Scenario | Steps | Expected result | Actual result | Pass or fail | Evidence |
-|---|---|---|---|---|---|---|
-| NEG-1 | Ordinary user turn | Run automated test with non-correction user text like `thanks` | No candidates returned | Automated test passes | Pass | `test/explicit-correction.test.js` |
-| NEG-2 | Correction phrase without prior assistant turn | Run detector on session starting with user correction | No candidate returned | Implemented in code, not yet covered by automated test | Partial | `src/detectors/explicit-correction.js` |
+## Results by acceptance case
 
-### Edge cases
-| Case ID | Scenario | Steps | Expected result | Actual result | Pass or fail | Evidence |
-|---|---|---|---|---|---|---|
-| EDGE-1 | Pattern variation | Use alternate phrases from default pattern set | Candidate should still be detected when regex matches | Implemented in code, not yet fully covered by automated tests | Partial | `src/detectors/explicit-correction.js` |
-| EDGE-2 | Multiple corrections in one session | Provide multiple corrected assistant turns | Multiple candidates should be returned | Behavior implied by loop, not yet acceptance-tested | Partial | `src/detectors/explicit-correction.js` |
+### Unit tests
+| Case ID | Scenario | Expected result | Actual result | Status |
+|---|---|---|---|---|
+| UNIT-POS-1 | Detect clear explicit correction | One candidate returned | One candidate returned | Pass |
+| UNIT-NEG-1 | Ordinary user turn | No candidate returned | No candidate returned | Pass |
+| UNIT-EDGE-1 | No prior assistant turn | No candidate returned | No candidate returned | Pass |
+| UNIT-ASSOC-1 | Correct assistant turn linked | Candidate points to intended prior assistant turn | Candidate linked to immediately prior assistant turn | Pass |
+| UNIT-PROV-1 | Provenance retained | Session id and metadata preserved | Session id, channel, model, instruction version preserved | Pass |
 
-## Observability and evidence
-- Logs checked: none
-- Metrics checked: none
-- Output artifacts: automated node test results, candidate object shape
-- Transcript or run ids: synthetic session fixtures in test
+### Fixture-level integration test
+| Case ID | Scenario | Expected result | Actual result | Status |
+|---|---|---|---|---|
+| INT-1 | End-to-end A2 path | Candidate artifact exists with required fields and provenance | One persisted JSON candidate artifact written with transcript excerpt, corrected expectation, session id, and turn range | Pass |
+
+## Evidence summary
+The implemented A2 slice now provides:
+- transcript validation in `src/schemas/transcript.js`
+- explicit correction detection in `src/detectors/explicit-correction.js`
+- durable JSON-file candidate persistence in `src/repository/candidate-store.js`
+- repo-local execution path in `src/cli/run-a2.js`
+- automated tests in `test/a2-explicit-correction.test.js`
+
+## What remains unvalidated or out of scope
+- plugin installation and runtime triggering
+- broad transcript ingestion beyond the narrow A2 contract
+- full typed mistake-record workflow for B1
+- review and curation workflow for B2
+- API, MCP, dashboard, scheduling, and benchmarking surfaces
+- broader heuristic coverage beyond the MVP correction phrase set
 
 ## Result summary
-- Overall verdict: Partial pass
-- Known gaps:
-  - automated tests cover only the primary positive path and ordinary negative path
-  - no fixture coverage for multiple corrections or missing prior assistant turn
-  - no end-to-end persistence or review validation yet
-- Follow-up bugs or stories:
-  - expand automated detector coverage
-  - add end-to-end story validation once persistence exists
-- Recommended release decision: acceptable for an MVP detector scaffold, not yet enough for a claimed production-ready A2
+- Overall verdict: A2 MVP slice passes its current repo-local acceptance bar
+- Release posture: acceptable as the first real A2 implementation slice
+- Known gaps: limited phrase coverage and no OpenClaw plugin/runtime surface yet
 
 ## Sign-off
 - Tested by: Palmer
-- Tested at: 2026-04-12
-- Approval status: scaffold validated, not complete
+- Tested at: 2026-04-13
+- Approval status: A2 MVP accepted for this narrow implementation slice
