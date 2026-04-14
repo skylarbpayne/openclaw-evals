@@ -9,12 +9,20 @@ This repo is no longer docs-only.
 Implemented repo-local MVP pieces:
 - transcript validation in `src/schemas/transcript.js`
 - explicit correction detector in `src/detectors/explicit-correction.js`
+- runtime/provider failure detector in `src/detectors/runtime-failure.js`
 - SQLite-backed candidate persistence in `src/repository/candidate-store.js`
-- A2 runner entrypoint in `src/index.js` and `src/cli/run-a2.js`
+- mining runner entrypoint in `src/index.js` and `src/cli/run-a2.js`
 - repo-local review repository in `src/review/review-repository.js`
 - repo-local review API in `src/review/api.js`
+- thin local review UI in `src/ui/review-server.js`
+- eval conversion in `src/evals/convert-candidate-to-eval.js`
+- honest plugin bridge in `src/plugin/openclaw-evals-plugin.js`
+- real OpenClaw session-log importer in `src/ingest/openclaw-session-import.js`
+- acceptance-tested runtime-failure E2E loop helper in `src/e2e/run-runtime-failure-loop.js`
 - A2 tests in `test/a2-explicit-correction.test.js`
+- A3 tests in `test/a3-runtime-failure.test.js`
 - B2 review/curation tests in `test/b2-review-curation.test.js`
+- runtime-failure E2E tests in `test/e2e-runtime-failure-loop.test.js`
 
 Current package layout on disk:
 - `src/` contains the active thin-slice implementation
@@ -37,13 +45,15 @@ Status: in progress
 
 Implemented:
 - A2 explicit correction detection, repo-local and acceptance-tested
+- A3 repeated runtime/provider failure-loop detection from real OpenClaw session logs
 - B1 SQLite-backed registry MVP for the current narrow candidate record
 - B2 repo-local review and curation MVP with approve, dismiss, edit, merge, and audit history
 - acceptance-tested end-to-end loop from transcript fixture to reviewed candidate
+- acceptance-tested end-to-end loop from a real runtime failure session fixture to approved eval artifact
 
 Not yet complete:
 - broader dashboard and operator surfaces beyond the thin local review UI
-- deeper OpenClaw runtime integration beyond the current plugin bridge, session-log adapter, and runtime-failure mining slices
+- deeper OpenClaw runtime integration beyond the current plugin bridge, session-log adapter, runtime-failure mining, and runtime-failure eval-loop slices
 - eval families and benchmark-running surfaces beyond the first C1 plus C4 artifact path
 - fuller B1 typed mistake record model beyond the narrow current payload boundary
 
@@ -94,6 +104,6 @@ Phase 1 should count as done only when:
 
 ## Immediate project posture
 
-This repo has a good spine.
-It does **not** yet have the first closed loop finished.
-So the right move is to stop adding broad new surfaces and finish the Phase 1 loop cleanly.
+This repo has a real spine now.
+It now has two honest closed-loop proofs: one for explicit user corrections and one for runtime/provider failure loops from real OpenClaw session data.
+The right move is still to avoid fake breadth and keep deepening the real corpus, ranking, and eval utility.
