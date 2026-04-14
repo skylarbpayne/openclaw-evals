@@ -14,7 +14,7 @@ Implemented repo-local MVP pieces:
 - mining runner entrypoint in `src/index.js` and `src/cli/run-a2.js`
 - repo-local review repository in `src/review/review-repository.js`
 - repo-local review API in `src/review/api.js`
-- thin local review and comparison UI in `src/ui/review-server.js`
+- thin local top-mistakes, review, and comparison UI in `src/ui/review-server.js`
 - eval conversion in `src/evals/convert-candidate-to-eval.js`
 - honest plugin bridge in `src/plugin/openclaw-evals-plugin.js`
 - real OpenClaw session-log importer in `src/ingest/openclaw-session-import.js`
@@ -54,6 +54,7 @@ Implemented:
 - D1 real captured response run MVP with preserved response provenance on scored real Palmer/OpenClaw captured assistant responses
 - D2-lite run summary comparison MVP over persisted D1 result artifacts for the same eval case
 - D3-lite regression gate MVP over persisted run histories with deterministic regression judgments
+- F1-lite top-mistakes view MVP over persisted candidates with ranked family/type summaries
 - F3-lite comparison view MVP in progress, focused on exposing D2 run comparisons through the thin local UI
 - acceptance-tested end-to-end loop from transcript fixture to reviewed candidate
 - acceptance-tested end-to-end loop from a real runtime failure session fixture to approved eval artifact

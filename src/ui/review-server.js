@@ -3,6 +3,7 @@ import { URL } from 'node:url';
 import { ReviewRepository } from '../review/review-repository.js';
 import { createReviewApi } from '../review/api.js';
 import { compareEvalRuns } from '../evals/compare-eval-runs.js';
+import { buildTopMistakesSummary } from '../analytics/top-mistakes-summary.js';
 
 export function createReviewServer({ baseDir, now } = {}) {
   const repository = new ReviewRepository(baseDir, now ? { now } : undefined);
@@ -13,7 +14,12 @@ export function createReviewServer({ baseDir, now } = {}) {
 
     try {
       if (req.method === 'GET' && url.pathname === '/') {
-        return redirect(res, '/candidates');
+        return redirect(res, '/top-mistakes');
+      }
+
+      if (req.method === 'GET' && url.pathname === '/top-mistakes') {
+        const summary = await buildTopMistakesSummary({ baseDir });
+        return html(res, renderTopMistakesPage(summary));
       }
 
       if (req.method === 'GET' && url.pathname === '/candidates') {
@@ -105,6 +111,49 @@ function notFound(res, message = 'Not found') {
   res.end(message);
 }
 
+function renderTopMistakesPage(summary) {
+  return `<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Top Mistakes</title>
+    <style>
+      body { font-family: sans-serif; margin: 2rem; }
+      table { border-collapse: collapse; width: 100%; }
+      th, td { border: 1px solid #ddd; padding: 0.6rem; text-align: left; vertical-align: top; }
+      nav a { margin-right: 1rem; }
+      .priority-investigate-now { color: #a11; font-weight: 700; }
+      .priority-review-soon { color: #9a5d00; font-weight: 700; }
+      .priority-routine { color: #555; }
+      ul { margin: 0; padding-left: 1.2rem; }
+    </style>
+  </head>
+  <body>
+    ${renderNav()}
+    <h1>Top Mistakes</h1>
+    <p>Total candidates: ${summary.totalCandidates} · Groups: ${summary.groupCount}</p>
+    <table>
+      <thead>
+        <tr><th>Group</th><th>Priority</th><th>Severity</th><th>Count</th><th>Statuses</th><th>Representative</th><th>Reasons</th></tr>
+      </thead>
+      <tbody>
+        ${summary.items.map((item) => `
+          <tr>
+            <td>${escapeHtml(item.label)}</td>
+            <td class="priority-${escapeHtmlAttr(item.priorityBand)}">${escapeHtml(item.priorityBand)}</td>
+            <td>${escapeHtml(item.severity)}</td>
+            <td>${item.totalCount}</td>
+            <td>${escapeHtml(formatStatusCounts(item.statusCounts))}</td>
+            <td>${escapeHtml(item.representativeCandidateId)}</td>
+            <td><ul>${item.reasons.map((reason) => `<li>${escapeHtml(reason)}</li>`).join('')}</ul></td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  </body>
+</html>`;
+}
+
 function renderCandidateListPage(candidates) {
   return `<!doctype html>
 <html>
@@ -119,6 +168,7 @@ function renderCandidateListPage(candidates) {
     </style>
   </head>
   <body>
+    ${renderNav()}
     <h1>Candidate Review Queue</h1>
     <table>
       <thead>
@@ -157,7 +207,7 @@ function renderCandidateDetailPage(candidate) {
     </style>
   </head>
   <body>
-    <nav><a href="/candidates">Candidates</a><a href="/comparisons">Comparisons</a></nav>
+    ${renderNav()}
     <p><a href="/candidates">← Back to queue</a></p>
     <h1>${escapeHtml(candidate.candidateId)}</h1>
     <p class="meta">Status: <strong>${escapeHtml(candidate.status)}</strong></p>
@@ -218,7 +268,7 @@ function renderComparisonListPage(summary) {
     </style>
   </head>
   <body>
-    <nav><a href="/candidates">Candidates</a><a href="/comparisons">Comparisons</a></nav>
+    ${renderNav()}
     <h1>Eval Comparisons</h1>
     <table>
       <thead>
@@ -256,7 +306,7 @@ function renderComparisonDetailPage(comparison) {
     </style>
   </head>
   <body>
-    <nav><a href="/candidates">Candidates</a><a href="/comparisons">Comparisons</a></nav>
+    ${renderNav()}
     <p><a href="/comparisons">← Back to comparisons</a></p>
     <h1>${escapeHtml(comparison.evalCaseId)}</h1>
     <h2>Verdict history</h2>
@@ -281,6 +331,17 @@ function renderComparisonDetailPage(comparison) {
     <pre>${escapeHtml(JSON.stringify(comparison.latest, null, 2))}</pre>
   </body>
 </html>`;
+}
+
+function renderNav() {
+  return '<nav><a href="/top-mistakes">Top Mistakes</a><a href="/candidates">Candidates</a><a href="/comparisons">Comparisons</a></nav>';
+}
+
+function formatStatusCounts(statusCounts) {
+  return Object.entries(statusCounts)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([status, count]) => `${status}: ${count}`)
+    .join(', ');
 }
 
 function escapeHtml(value) {

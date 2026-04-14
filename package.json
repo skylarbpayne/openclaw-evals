@@ -12,6 +12,7 @@
     "c1:convert": "node src/cli/convert-approved-candidate.js",
     "d1:run": "node src/cli/run-eval-case.js",
     "d3:run": "node src/cli/run-d3-lite.js",
+    "f1:top": "node -e \"import('./src/analytics/top-mistakes-summary.js').then(async ({ buildTopMistakesSummary }) => { const path = (await import('node:path')).default; const baseDir = process.argv[1] ?? path.resolve(process.cwd(), 'artifacts', 'candidates'); console.log(JSON.stringify(await buildTopMistakesSummary({ baseDir }), null, 2)); })\"",
     "p1:plugin-smoke": "node --test test/p1-honest-plugin.test.js"
   }
 }
