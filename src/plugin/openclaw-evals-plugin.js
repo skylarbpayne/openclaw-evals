@@ -5,13 +5,17 @@ import { createReviewApi } from '../review/api.js';
 import { ReviewRepository } from '../review/review-repository.js';
 import { convertApprovedCandidateToEval } from '../evals/convert-candidate-to-eval.js';
 import { importOpenClawSessionLog } from '../ingest/openclaw-session-import.js';
+import { createReviewServer } from '../ui/review-server.js';
 import { normalizePluginConfig } from './config.js';
 
 export function createOpenClawEvalsPlugin(config = {}) {
   const normalized = normalizePluginConfig(config);
   const outputDir = normalized.outputDir;
   const reviewer = normalized.reviewer;
+  const uiHost = normalized.uiHost;
+  const uiPort = normalized.uiPort;
   const now = normalized.now;
+  let uiServer = null;
 
   return {
     id: 'openclaw-evals',
@@ -108,6 +112,58 @@ export function createOpenClawEvalsPlugin(config = {}) {
         candidateIds: mined.candidates.map((candidate) => candidate.candidateId),
         candidates: mined.candidates,
       };
+    },
+
+    async startUiServer() {
+      await mkdir(outputDir, { recursive: true });
+
+      if (uiServer?.listening) {
+        const address = uiServer.address();
+        return buildUiInfo(address, outputDir);
+      }
+
+      uiServer = createReviewServer({ baseDir: outputDir, now });
+      await new Promise((resolve, reject) => {
+        uiServer.once('error', reject);
+        uiServer.listen(uiPort, uiHost, () => {
+          uiServer.off('error', reject);
+          resolve();
+        });
+      });
+
+      return buildUiInfo(uiServer.address(), outputDir);
+    },
+
+    async stopUiServer() {
+      if (!uiServer?.listening) {
+        return { stopped: false };
+      }
+
+      await new Promise((resolve, reject) => {
+        uiServer.close((error) => {
+          if (error) reject(error);
+          else resolve();
+        });
+      });
+      uiServer = null;
+      return { stopped: true };
+    },
+  };
+}
+
+function buildUiInfo(address, outputDir) {
+  if (!address || typeof address === 'string') {
+    throw new Error('UI server did not return a usable network address');
+  }
+
+  const origin = `http://${address.address}:${address.port}`;
+  return {
+    outputDir,
+    origin,
+    routes: {
+      topMistakes: `${origin}/top-mistakes`,
+      candidates: `${origin}/candidates`,
+      comparisons: `${origin}/comparisons`,
     },
   };
 }
