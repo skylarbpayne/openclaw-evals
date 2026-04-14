@@ -51,6 +51,7 @@ Implemented:
 - B3 severity/frequency MVP with explicit ranking metadata on stored candidates
 - C3-lite runtime failure families MVP with deterministic family metadata on repeated runtime/provider failure artifacts
 - D1-lite local eval runner MVP with durable pass/fail result artifacts over existing eval cases
+- D1 real captured response run MVP in progress, focused on grading real Palmer/OpenClaw captured assistant responses against existing eval artifacts with preserved response provenance
 - acceptance-tested end-to-end loop from transcript fixture to reviewed candidate
 - acceptance-tested end-to-end loop from a real runtime failure session fixture to approved eval artifact
 

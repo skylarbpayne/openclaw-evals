@@ -33,7 +33,15 @@ export async function replayExpectedBehavior(evalCase) {
   return evalCase.expectedBehavior ?? '';
 }
 
-function gradeEvalCase({ evalCase, response, createdAt }) {
+export async function gradeCapturedResponse({ baseDir, evalCaseId, response, responseMetadata = {}, now }) {
+  const evalCase = await new EvalCaseStore(baseDir).read(evalCaseId);
+  const createdAt = now ? now() : new Date().toISOString();
+  const result = gradeEvalCase({ evalCase, response, createdAt, responseMetadata });
+  const filePath = await new EvalResultStore(baseDir).save(result);
+  return { result, filePath };
+}
+
+function gradeEvalCase({ evalCase, response, createdAt, responseMetadata = {} }) {
   const checks = (evalCase.scoring?.grading?.checks ?? []).map((check) => evaluateCheck(check, response));
   const passed = checks.every((check) => check.passed);
 
@@ -53,6 +61,7 @@ function gradeEvalCase({ evalCase, response, createdAt }) {
       sourceStoryId: evalCase.provenance?.sourceStoryId ?? null,
       sourceSessionId: evalCase.provenance?.sourceSessionId ?? null,
       candidateFamily: evalCase.provenance?.candidateFamily ?? null,
+      responseMetadata,
     },
     createdAt,
   };
