@@ -22,6 +22,8 @@ Implemented repo-local MVP pieces:
 - plugin-native runtime mining path for real OpenClaw session logs in `src/plugin/openclaw-evals-plugin.js`
 - plugin-owned UI startup and local route reporting in `src/plugin/openclaw-evals-plugin.js`
 - plugin eval tools for listing, inspection, run comparison, and regression detection in `src/plugin/openclaw-evals-plugin.js`
+- plugin candidate-promotion policy for approved-candidate -> eval conversion in `src/plugin/openclaw-evals-plugin.js`
+- plugin onboarding backfill mining for one session log or a directory of session logs in `src/plugin/openclaw-evals-plugin.js`
 - plugin capability roadmap in `docs/plugin-capability-roadmap.md`
 - real OpenClaw session-log importer in `src/ingest/openclaw-session-import.js`
 - acceptance-tested runtime-failure E2E loop helper in `src/e2e/run-runtime-failure-loop.js`
@@ -66,6 +68,8 @@ Implemented:
 - P1 runtime mining path MVP for real OpenClaw session-log mining through the plugin surface
 - P1 plugin-owned UI routes MVP for top mistakes, candidate review, and eval comparisons
 - P1 eval tools MVP for eval listing, inspection, comparison, and regression detection through the plugin surface
+- P1 candidate promotion MVP for approved-candidate -> eval conversion through the plugin surface
+- P1 backfill mining onboarding MVP for immediate value from past session logs
 - F3-lite comparison view MVP in progress, focused on exposing D2 run comparisons through the thin local UI
 - acceptance-tested end-to-end loop from transcript fixture to reviewed candidate
 - acceptance-tested end-to-end loop from a real runtime failure session fixture to approved eval artifact
