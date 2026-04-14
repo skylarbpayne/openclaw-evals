@@ -42,7 +42,7 @@ Implemented:
 - acceptance-tested end-to-end loop from transcript fixture to reviewed candidate
 
 Not yet complete:
-- broader transcript ingestion beyond the A2 contract
+- broader transcript ingestion beyond the A2 contract, now being addressed as the A1 file-import MVP
 - fuller B1 typed mistake record model beyond the narrow current payload boundary
 - real OpenClaw runtime integration
 - dashboard, MCP, or HTTP API operator surfaces

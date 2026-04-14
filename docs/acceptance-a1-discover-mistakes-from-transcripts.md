@@ -5,61 +5,65 @@
 - Story title: Discover mistakes from transcripts
 - Owner: Skylar
 - Related architecture subsystem(s): Data ingestion, Failure mining
-- Related PR(s): https://github.com/skylarbpayne/openclaw-evals/pull/3
+- Related PR(s): local working tree after `34475cd`
 - Environment: local repo
-- Build or commit under test: `ea187c2` and later
+- Build or commit under test: working tree with A1 transcript import contract MVP
 
 ## Intent
-- User value: ingest transcript-shaped input so downstream failure detection can run on normalized session data
-- Risk if this fails: failure mining has no stable evidence input and all downstream artifacts become hand-wavy
+- User value: ingest transcript JSON files through a real import contract instead of relying on a single hardcoded fixture path in test code
+- Risk if this fails: failure mining remains coupled to handcrafted in-memory inputs and cannot honestly scale to real transcript evidence
 
 ## Acceptance criteria under test
-1. Can ingest session transcripts and preserve core metadata needed downstream
-2. Produces a normalized transcript object with turns and ingestion metadata
-3. Links candidates to session id and model or instruction context once passed downstream
+1. Can ingest session transcripts from JSON files
+2. Produces normalized transcript objects with preserved metadata
+3. Allows imported transcripts to flow into downstream candidate generation
 
 ## Preconditions
-- Data setup: local transcript-shaped fixture object
-- Required services: none
-- Test accounts or fixtures: none
+- Data setup: `test/fixtures/a2-explicit-correction.json` plus temporary JSON files created during automated tests
+- Required services: none beyond local Node.js execution
+- Test accounts or fixtures: file-based transcript fixtures only
 
-## Test cases
+## Automated commands run
+```bash
+node --test test/a1-transcript-import.test.js test/a2-explicit-correction.test.js test/b2-review-curation.test.js
+```
+
+## Results by acceptance case
 
 ### Positive path
-| Case ID | Scenario | Steps | Expected result | Actual result | Pass or fail | Evidence |
-|---|---|---|---|---|---|---|
-| POS-1 | Ingest minimal valid session | Call `ingestSessionTranscript()` with `sessionId` and `turns` | Returns normalized object with `sessionId`, `turns`, default metadata, and `ingestedAt` | Implemented in code | Pass | `src/ingest/transcript-ingestion.js` |
-| POS-2 | Preserve optional metadata | Call `ingestSessionTranscript()` with `channel`, `model`, `instructionVersion` | Returned object preserves supplied metadata | Implemented in code | Pass | `src/ingest/transcript-ingestion.js` |
+| Case ID | Scenario | Expected result | Actual result | Status |
+|---|---|---|---|---|
+| A1-POS-1 | Import valid transcript file | Returns normalized transcript preserving metadata | Valid transcript file imports successfully with `sessionId`, `channel`, `model`, `instructionVersion`, and normalized turns preserved | Pass |
+| A1-POS-2 | Import directory of transcript files | Returns normalized transcripts for each JSON file | Batch directory import returns all valid transcript files in deterministic order | Pass |
 
 ### Negative path
-| Case ID | Scenario | Steps | Expected result | Actual result | Pass or fail | Evidence |
-|---|---|---|---|---|---|---|
-| NEG-1 | Missing session object | Call `ingestSessionTranscript()` with null or non-object | Throws `session is required` | Implemented in code, not yet covered by automated test | Partial | `src/ingest/transcript-ingestion.js` |
+| Case ID | Scenario | Expected result | Actual result | Status |
+|---|---|---|---|---|
+| A1-NEG-1 | Invalid transcript file | Import fails with useful file-aware validation error | Invalid file is rejected with path-aware validation message | Pass |
 
 ### Edge cases
-| Case ID | Scenario | Steps | Expected result | Actual result | Pass or fail | Evidence |
-|---|---|---|---|---|---|---|
-| EDGE-1 | Missing optional metadata | Omit `channel`, `model`, `instructionVersion` | Defaults to `unknown` values | Implemented in code | Pass | `src/ingest/transcript-ingestion.js` |
-| EDGE-2 | Missing turns array | Omit `turns` | Returns empty turns array | Implemented in code | Pass | `src/ingest/transcript-ingestion.js` |
+| Case ID | Scenario | Expected result | Actual result | Status |
+|---|---|---|---|---|
+| A1-EDGE-1 | Imported transcript flows into A2 | Imported transcript works with downstream mining path | Imported transcript passes into `runA2()` without fixture-specific handling and produces the expected candidate | Pass |
 
-## Observability and evidence
-- Logs checked: none
-- Metrics checked: none
-- Output artifacts: normalized transcript object
-- Transcript or run ids: local synthetic fixture only
+## Evidence summary
+The A1 import-contract MVP now exists in `src/ingest/transcript-import.js`.
+It supports single-file and directory-based JSON transcript imports and validates them through the existing transcript schema boundary in `src/schemas/transcript.js`.
+Automated coverage lives in `test/a1-transcript-import.test.js`.
+
+## What remains out of scope
+- OpenClaw runtime transcript export ingestion
+- tool trace ingestion beyond transcript JSON
+- privacy/redaction handling
+- implicit failure mining
+- richer transcript bundle formats
 
 ## Result summary
-- Overall verdict: Partial pass
-- Known gaps:
-  - no real transcript fixture file yet
-  - no automated test coverage for ingest error path
-  - no end-to-end proof with downstream persistence
-- Follow-up bugs or stories:
-  - add transcript fixture-based tests
-  - add end-to-end acceptance slice
-- Recommended release decision: acceptable only as an early scaffold for A1, not as a finished implementation
+- Overall verdict: A1 file-import MVP passes its current acceptance bar
+- Release posture: acceptable as the first honest ingestion slice supporting the existing A2 and B2 loop
+- Known gaps: still file-based and transcript-only, not yet wired to real OpenClaw runtime exports
 
 ## Sign-off
 - Tested by: Palmer
-- Tested at: 2026-04-12
-- Approval status: scaffold validated, not complete
+- Tested at: 2026-04-13
+- Approval status: A1 file-import MVP accepted
