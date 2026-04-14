@@ -1,4 +1,4 @@
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { runA2 } from '../index.js';
 import { createReviewApi } from '../review/api.js';
@@ -197,6 +197,99 @@ export function createOpenClawEvalsPlugin(config = {}) {
       }
 
       return detectRegression({ baseDir: outputDir, evalCaseId });
+    },
+
+    async listPromotionCandidates() {
+      const candidates = await new ReviewRepository(outputDir, now ? { now } : undefined).list();
+      return {
+        outputDir,
+        items: candidates.map((candidate) => ({
+          candidateId: candidate.candidateId,
+          status: candidate.status,
+          title: candidate.title ?? null,
+          eligibleForPromotion: candidate.status === 'approved',
+          reason: candidate.status === 'approved'
+            ? 'approved candidate can be converted to an eval'
+            : 'candidate must be approved before eval conversion',
+        })),
+      };
+    },
+
+    async promoteCandidateToEval({ candidateId } = {}) {
+      if (!candidateId) {
+        throw new Error('candidateId is required');
+      }
+
+      const { evalCase, filePath } = await convertApprovedCandidateToEval({
+        baseDir: outputDir,
+        candidateId,
+        now,
+      });
+
+      return {
+        outputDir,
+        candidateId,
+        policy: 'approved-candidate-only',
+        promoted: true,
+        evalCaseId: evalCase.evalCaseId,
+        filePath,
+        evalCase,
+      };
+    },
+
+    async backfillSessionLog({ sessionLogPath } = {}) {
+      if (!sessionLogPath) {
+        throw new Error('sessionLogPath is required');
+      }
+
+      const mined = await this.mineSessionLog({ sessionLogPath });
+      return {
+        outputDir,
+        sessionsScanned: 1,
+        minedCount: mined.minedCount,
+        candidateIds: mined.candidateIds,
+        sessions: [{
+          sessionLogPath,
+          transcriptSessionId: mined.transcriptSessionId,
+          minedCount: mined.minedCount,
+          candidateIds: mined.candidateIds,
+        }],
+      };
+    },
+
+    async backfillSessionLogDirectory({ directoryPath } = {}) {
+      if (!directoryPath) {
+        throw new Error('directoryPath is required');
+      }
+
+      const entries = (await readdir(directoryPath))
+        .filter((entry) => entry.endsWith('.jsonl'))
+        .sort();
+
+      const sessions = [];
+      let minedCount = 0;
+      const candidateIds = [];
+
+      for (const entry of entries) {
+        const sessionLogPath = path.join(directoryPath, entry);
+        const mined = await this.mineSessionLog({ sessionLogPath });
+        minedCount += mined.minedCount;
+        candidateIds.push(...mined.candidateIds);
+        sessions.push({
+          sessionLogPath,
+          transcriptSessionId: mined.transcriptSessionId,
+          minedCount: mined.minedCount,
+          candidateIds: mined.candidateIds,
+        });
+      }
+
+      return {
+        outputDir,
+        sessionsScanned: sessions.length,
+        minedCount,
+        candidateIds,
+        sessions,
+      };
     },
   };
 }
