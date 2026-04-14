@@ -26,14 +26,17 @@ export async function importOpenClawSessionLog(filePath) {
     }
 
     const text = extractText(event.message.content);
-    if (!text) {
+    const errorMessage = role === 'assistant' ? event.message.errorMessage ?? event.errorMessage ?? null : null;
+    if (!text && !errorMessage) {
       continue;
     }
 
     turns.push({
       role,
-      content: text,
+      content: text || errorMessage,
       timestamp: event.timestamp ?? event.message.timestamp ?? null,
+      kind: errorMessage ? 'runtime_error' : 'text',
+      errorMessage,
     });
   }
 
