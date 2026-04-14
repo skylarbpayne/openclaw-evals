@@ -16,11 +16,11 @@ Purpose: track each user story from definition through implementation and valida
 | Story ID | Story summary | Architecture subsystem(s) | Primary artifact(s) | Implementation phase | Readiness status | Acceptance owner | Notes |
 |---|---|---|---|---|---|---|---|
 | A1 | Discover mistakes from transcripts | Data ingestion, Failure mining | transcript ingestion job, candidate detector | Phase 2 | Not started | Skylar | No implementation artifacts currently exist in the repo. Re-plan after the A2 slice is landed. Existing acceptance doc reflects a deleted scaffold and is not current implementation evidence. |
-| A2 | Detect explicit user corrections | Failure mining | explicit correction detector, candidate persistence path | Phase 1 | Ready for implementation | Skylar | Planned next implementation slice in `docs/plan-a2-explicit-correction-mvp.md`. No current implementation artifacts exist in the repo; the existing acceptance doc must be refreshed during implementation. |
+| A2 | Detect explicit user corrections | Failure mining | explicit correction detector, candidate persistence path | Phase 1 | Acceptance-tested | Skylar | Implemented in `src/schemas/transcript.js`, `src/detectors/explicit-correction.js`, `src/repository/candidate-store.js`, `src/index.js`, `src/cli/run-a2.js`, and `test/a2-explicit-correction.test.js`. Acceptance evidence lives in `docs/acceptance-a2-detect-explicit-user-corrections.md`. This remains a narrow repo-local slice, not a claim that A1, B1, B2, or P1 are complete. |
 | A3 | Detect implicit failures | Failure mining | implicit heuristic detector | Phase 2 | Not started | Skylar | Lower-confidence path |
 | A4 | Cluster recurring mistake types | Failure mining, Mistake registry | family clustering service | Phase 2 | Not started | Skylar | Needs enough data |
-| B1 | Create typed mistake record | Mistake registry | mistake schema, persistence layer | Phase 2 | Not started | Skylar | No implementation artifacts currently exist in the repo. The A2 slice may introduce a narrow persisted candidate shape, but that must not be claimed as full B1 completion. |
-| B2 | Review and curate candidates | Review and curation, Dashboard | review queue UI, curation actions | Phase 3 | Not started | Skylar | No implementation artifacts currently exist in the repo. Review workflow should wait until A2 and B1 are real. |
+| B1 | Create typed mistake record | Mistake registry | mistake schema, persistence layer | Phase 2 | Not started | Skylar | The A2 slice persists a narrow candidate artifact only. Do not treat that as B1 completion. |
+| B2 | Review and curate candidates | Review and curation, Dashboard | review queue UI, curation actions | Phase 3 | Not started | Skylar | Review workflow should wait until A2 and B1 are real. |
 | B3 | Track severity and frequency | Mistake registry, Results analytics | severity model, aggregation views | Phase 2 | Not started | Skylar | Depends on corpus |
 | C1 | Generate minimal repro eval | Eval generation | mistake-to-eval converter | Phase 2 | Not started | Skylar | First eval creator |
 | C2 | Expand variants | Eval generation | variant generator | Phase 3 | Not started | Skylar | Synthetic after real cases |
@@ -40,7 +40,7 @@ Purpose: track each user story from definition through implementation and valida
 | G1 | Export cases for offline analysis | Research bridge | export API, markdown and JSON export | Phase 4 | Not started | Skylar | Useful external hook |
 | G2 | Preserve privacy boundaries | Ingestion, Export, Registry | redaction policy, sanitization controls | Phase 2 | Not started | Skylar | Non-optional |
 | G3 | Re-run benchmarks on schedule | Plugin runtime, Eval runner | cron runner, snapshot history | Phase 4 | Not started | Skylar | Operational hardening |
-| P1 | Install as OpenClaw plugin | Plugin runtime | plugin module, config, migrations | Phase 5 | Not started | Skylar | No implementation artifacts currently exist in the repo. Packaging should follow a proven core failure-catalog slice, not precede it. |
+| P1 | Install as OpenClaw plugin | Plugin runtime | plugin module, config, migrations | Phase 5 | Not started | Skylar | Packaging should follow a proven core failure-catalog slice, not precede it. |
 | P2 | MCP-first interface | MCP layer | tools and resources contract | Phase 3 | Not started | Skylar | Agent-native access |
 | P3 | API out of the box | API layer | HTTP API spec and handlers | Phase 2 | Not started | Skylar | External integration |
 | P4 | Research compatibility layer | Research bridge, Schemas | exchange schemas, bundle validator | Phase 4 | Not started | Skylar | Artifact boundary |

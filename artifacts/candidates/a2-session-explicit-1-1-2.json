@@ -1,0 +1,30 @@
+{
+  "candidateId": "a2-session-explicit-1-1-2",
+  "storyId": "A2",
+  "mistakeType": "explicit_user_correction",
+  "sourceSessionId": "session-explicit-1",
+  "sourceTurnRange": {
+    "start": 1,
+    "end": 2
+  },
+  "provenance": {
+    "channel": "discord",
+    "model": "gpt-5.4",
+    "instructionVersion": "2026-04-13-a2",
+    "assistantTimestamp": "2026-04-13T17:00:10Z",
+    "userTimestamp": "2026-04-13T17:00:20Z"
+  },
+  "transcriptExcerpt": {
+    "correctedAssistantTurn": {
+      "role": "assistant",
+      "content": "Sure, here's an email draft you can send to the team.",
+      "index": 1
+    },
+    "correctingUserTurn": {
+      "role": "user",
+      "content": "That's wrong, I asked for a summary not an email.",
+      "index": 2
+    }
+  },
+  "correctedExpectation": "That's wrong, I asked for a summary not an email."
+}

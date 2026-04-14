@@ -1,0 +1,23 @@
+{
+  "sessionId": "session-explicit-1",
+  "channel": "discord",
+  "model": "gpt-5.4",
+  "instructionVersion": "2026-04-13-a2",
+  "turns": [
+    {
+      "role": "user",
+      "content": "Write me a short summary of this thread.",
+      "timestamp": "2026-04-13T17:00:00Z"
+    },
+    {
+      "role": "assistant",
+      "content": "Sure, here's an email draft you can send to the team.",
+      "timestamp": "2026-04-13T17:00:10Z"
+    },
+    {
+      "role": "user",
+      "content": "That's wrong, I asked for a summary not an email.",
+      "timestamp": "2026-04-13T17:00:20Z"
+    }
+  ]
+}

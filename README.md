@@ -23,11 +23,13 @@ This repo starts with product and architecture artifacts for the first implement
 
 ## First implementation slice
 
-This repo now includes a minimal failure-catalog scaffold:
+This repo now includes a narrow A2 explicit-correction MVP:
 
-- plugin skeleton in `src/plugin/`
-- mistake candidate schema and in-memory repository in `src/schemas/`
-- transcript ingestion stub in `src/ingest/`
+- transcript-shaped input validation in `src/schemas/`
 - explicit correction detector in `src/detectors/`
-- review API shape in `src/review/`
+- JSON-file candidate persistence in `src/repository/`
+- repo-local CLI entrypoint in `src/cli/`
 - node tests in `test/`
+
+This is intentionally repo-local and developer-operated for now.
+It is not yet an OpenClaw plugin, dashboard, API, or review workflow.
