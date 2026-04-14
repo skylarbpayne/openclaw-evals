@@ -11,6 +11,7 @@
     "ui:review": "node src/cli/run-review-ui.js",
     "c1:convert": "node src/cli/convert-approved-candidate.js",
     "d1:run": "node src/cli/run-eval-case.js",
+    "d3:run": "node src/cli/run-d3-lite.js",
     "p1:plugin-smoke": "node --test test/p1-honest-plugin.test.js"
   }
 }
