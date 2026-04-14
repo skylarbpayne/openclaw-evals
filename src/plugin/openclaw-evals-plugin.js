@@ -4,6 +4,10 @@ import { runA2 } from '../index.js';
 import { createReviewApi } from '../review/api.js';
 import { ReviewRepository } from '../review/review-repository.js';
 import { convertApprovedCandidateToEval } from '../evals/convert-candidate-to-eval.js';
+import { EvalCaseStore } from '../evals/eval-case-store.js';
+import { EvalResultStore } from '../evals/eval-result-store.js';
+import { compareEvalRuns } from '../evals/compare-eval-runs.js';
+import { detectRegression } from '../evals/detect-regression.js';
 import { importOpenClawSessionLog } from '../ingest/openclaw-session-import.js';
 import { createReviewServer } from '../ui/review-server.js';
 import { normalizePluginConfig } from './config.js';
@@ -147,6 +151,52 @@ export function createOpenClawEvalsPlugin(config = {}) {
       });
       uiServer = null;
       return { stopped: true };
+    },
+
+    async listEvals() {
+      const store = new EvalCaseStore(outputDir);
+      const entries = await store.list();
+      return {
+        outputDir,
+        evalCaseIds: entries.map((entry) => path.basename(entry, '.json')),
+      };
+    },
+
+    async getEval({ evalCaseId } = {}) {
+      if (!evalCaseId) {
+        throw new Error('evalCaseId is required');
+      }
+
+      const evalCase = await new EvalCaseStore(outputDir).read(evalCaseId);
+      return {
+        outputDir,
+        evalCase,
+      };
+    },
+
+    async listEvalRuns({ evalCaseId } = {}) {
+      const summary = await compareEvalRuns({ baseDir: outputDir, evalCaseId });
+      return {
+        outputDir,
+        totalRuns: summary.totalRuns,
+        evalCases: summary.evalCases.map((entry) => ({
+          evalCaseId: entry.evalCaseId,
+          runCount: entry.runCount,
+          verdicts: entry.verdicts,
+        })),
+      };
+    },
+
+    async compareEvalRuns({ evalCaseId } = {}) {
+      return compareEvalRuns({ baseDir: outputDir, evalCaseId });
+    },
+
+    async detectRegression({ evalCaseId } = {}) {
+      if (!evalCaseId) {
+        throw new Error('evalCaseId is required');
+      }
+
+      return detectRegression({ baseDir: outputDir, evalCaseId });
     },
   };
 }
